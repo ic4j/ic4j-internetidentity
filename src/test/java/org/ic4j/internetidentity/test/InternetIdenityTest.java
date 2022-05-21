@@ -59,6 +59,8 @@ public final class InternetIdenityTest {
 			env.load(propInputStream);
 
 			String iiLocation = env.getProperty("ii.location");
+			
+			LOG.info(iiLocation);
 
 			ReplicaTransport transport = ReplicaApacheHttpTransport.create(iiLocation);
 
@@ -72,19 +74,20 @@ public final class InternetIdenityTest {
 			InternetIdentityService internetIdentityService = InternetIdentityService.create(agent, env);
 
 			byte[] sessionKey = keyPair.getPublic().getEncoded();
+			
+			
 
 			CompletableFuture<Challenge> challengeResponse = internetIdentityService.createChallenge();
 
 			Challenge challenge = challengeResponse.get();
 
-			LOG.info(challenge.pngBase64);
+			//LOG.info(challenge.pngBase64);
 			LOG.info(challenge.challengeKey);
 
 			Path captchaFile = Paths.get("challenge.png");
 			// convert byte[] back to a BufferedImage
 			BufferedImage captchaImage = internetIdentityService.getCaptchaImage(challenge);
-
-
+			
 			ChallengeResult challengeResult = new ChallengeResult();
 
 			challengeResult.challengeKey = challenge.challengeKey;
@@ -101,29 +104,43 @@ public final class InternetIdenityTest {
 
 			KeyType keyType = KeyType.platform;
 			device.keyType = keyType;
-
+			
+			
+			device.credentialId = Optional.empty();
+			
+			//device = null;
+			
+			//challengeResult = null;
+			
 			CompletableFuture<RegisterResponse> registerResponse = internetIdentityService.register(device,
 					challengeResult);
+			
+			
 
 			RegisterResponse register = registerResponse.get();
 			LOG.info(register.name());
-			LOG.info(register.registeredValue.userNumber.toString());
+			LOG.info(register.registeredValue.userNumber.toString());					
 
+			
 			Long userNumber = register.registeredValue.userNumber;
 
 			String frontendHostname = "http://0.0.0.0:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai&id=renrk-eyaaa-aaaaa-aaada-cai";
 
+			
 			CompletableFuture<PrepareDelegationResponse> response = internetIdentityService
 					.prepareDelegation(userNumber, frontendHostname, sessionKey, Optional.empty());
 
 			PrepareDelegationResponse prepareDelegationResponse = response.get();
 
+			
 			LOG.info(Base64.getEncoder().encodeToString(prepareDelegationResponse.userKey));
-
+			
 			GetDelegationResponse getDelegationResponse = internetIdentityService.getDelegation(userNumber,
 					frontendHostname, sessionKey, prepareDelegationResponse.timestamp);
 
 			LOG.info(Base64.getEncoder().encodeToString(getDelegationResponse.signedDelegation.signature));
+			
+			
 
 			Principal principal = internetIdentityService.getPrincipal(userNumber, frontendHostname);
 
@@ -175,6 +192,9 @@ public final class InternetIdenityTest {
 
 			InternetIdentityStats stats = internetIdentityService.stats();
 			LOG.info(stats.usersRegistered.toString());
+			
+			
+			
 		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			Assertions.fail(e.getMessage());
