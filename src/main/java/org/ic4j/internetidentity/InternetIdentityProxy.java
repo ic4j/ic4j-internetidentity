@@ -16,6 +16,7 @@
 
 package org.ic4j.internetidentity;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.ic4j.agent.annotations.Waiter;
@@ -24,6 +25,7 @@ import org.ic4j.agent.annotations.Argument;
 import org.ic4j.agent.annotations.QUERY;
 import org.ic4j.agent.annotations.ResponseClass;
 import org.ic4j.candid.annotations.Name;
+import org.ic4j.candid.parser.IDLArgs;
 import org.ic4j.candid.types.Type;
 import org.ic4j.types.Principal;
 
@@ -99,6 +101,14 @@ public interface InternetIdentityProxy {
 	@ResponseClass(VerifyTentativeDeviceResponse.class)
 	public CompletableFuture<VerifyTentativeDeviceResponse> verifyTentativeDevice(@Argument(Type.NAT64)Long userNumber, @Argument(Type.TEXT)String verificationCode);	
 
+
+	@UPDATE
+	@Name("prepare_delegation")
+	@Waiter(timeout = 30)
+	@ResponseClass(IDLArgs.class)	
+	public CompletableFuture<IDLArgs> prepareDelegation(@Argument(Type.NAT64)Long userNumber,  @Argument(Type.TEXT)String frontendHostname,
+			 @Argument(Type.NAT8)byte[] sessionKey, @Argument(Type.OPT)Optional<Long> maxTimeToLive);
+	
 	@QUERY
 	@Name("get_delegation")
 	public GetDelegationResponse getDelegation(@Argument(Type.NAT64)Long userNumber,@Argument(Type.TEXT)String frontendHostname,  @Argument(Type.NAT8)byte[] sessionKey, @Argument(Type.NAT64)Long timestamp);

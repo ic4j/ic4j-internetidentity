@@ -27,9 +27,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
@@ -42,17 +40,11 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.ic4j.agent.Agent;
 import org.ic4j.agent.ProxyBuilder;
-import org.ic4j.agent.UpdateBuilder;
-import org.ic4j.agent.Waiter;
 import org.ic4j.candid.parser.IDLArgs;
-import org.ic4j.candid.parser.IDLType;
-import org.ic4j.candid.parser.IDLValue;
-import org.ic4j.candid.types.Type;
 import org.ic4j.types.Principal;
 
 public final class InternetIdentityService {
 	static final String PROPERTIES_FILE_NAME = "internetidentity.properties";
-	static final String PREPARE_DELEGATION_METHOD_NAME = "prepare_delegation";
 
 	static Properties env;
 
@@ -185,36 +177,14 @@ public final class InternetIdentityService {
 	 * the self-authenticating id derived from any of the public keys of devices
 	 * associated with the user before this call.
 	 */	
+	
 	public CompletableFuture<PrepareDelegationResponse> prepareDelegation(Long userNumber, String frontendHostname,
 			byte[] sessionKey, Optional<Long> maxTimeToLive) {
 		CompletableFuture<PrepareDelegationResponse> response = new CompletableFuture<PrepareDelegationResponse>();
 
-		IDLValue userNumberValue = IDLValue.create(userNumber, Type.NAT64);
-		IDLValue frontendHostnameValue = IDLValue.create(frontendHostname);
-		IDLValue sessionKeyValue = IDLValue.create(sessionKey,
-				IDLType.createType(Type.VEC, IDLType.createType(Type.NAT8)));
-		IDLValue maxTimeToLiveValue = IDLValue.create(maxTimeToLive);
-
-		List<IDLValue> args = new ArrayList<IDLValue>();
-
-		args.add(userNumberValue);
-		args.add(frontendHostnameValue);
-		args.add(sessionKeyValue);
-		args.add(maxTimeToLiveValue);
-
-		IDLArgs idlArgs = IDLArgs.create(args);
-
-		byte[] buf = idlArgs.toBytes();
-
-		UpdateBuilder updateBuilder = UpdateBuilder
-				.create(this.agent, Principal.fromString(this.iiCanister), PREPARE_DELEGATION_METHOD_NAME).arg(buf);
-
-		CompletableFuture<byte[]> builderResponse = updateBuilder.callAndWait(Waiter.create(30, 5));
-
-		byte[] output;
 		try {
-			output = builderResponse.get();
-			IDLArgs outArgs = IDLArgs.fromBytes(output);
+
+			IDLArgs outArgs = internetIdentityProxy.prepareDelegation(userNumber, frontendHostname, sessionKey, maxTimeToLive).get();
 			PrepareDelegationResponse prepareDelegationResponse = new PrepareDelegationResponse();
 
 			prepareDelegationResponse.userKey = ArrayUtils.toPrimitive((Byte[]) outArgs.getArgs().get(0).getValue());

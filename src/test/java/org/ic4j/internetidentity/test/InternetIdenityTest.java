@@ -76,7 +76,6 @@ public final class InternetIdenityTest {
 			byte[] sessionKey = keyPair.getPublic().getEncoded();
 			
 			
-
 			CompletableFuture<Challenge> challengeResponse = internetIdentityService.createChallenge();
 
 			Challenge challenge = challengeResponse.get();
