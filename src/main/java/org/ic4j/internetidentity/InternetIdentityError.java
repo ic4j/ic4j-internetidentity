@@ -17,25 +17,40 @@
 package org.ic4j.internetidentity;
 
 public class InternetIdentityError extends Error {
+	private static final long serialVersionUID = -5686403499138076209L;
+	InternetIdentityErrorCode code;
 
 	public InternetIdentityError() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public InternetIdentityError(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public InternetIdentityError(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public InternetIdentityError(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
+	}
+	
+	public InternetIdentityError(InternetIdentityErrorCode code) {
+		this.code = code;
 	}
 
+	public InternetIdentityError(String message, InternetIdentityErrorCode code) {	
+		super(message);
+		this.code = code;
+	}	
+	
+	public InternetIdentityErrorCode getCode()
+	{
+		return this.code;
+	}
+	
+	public enum InternetIdentityErrorCode {
+	}
 
 }
