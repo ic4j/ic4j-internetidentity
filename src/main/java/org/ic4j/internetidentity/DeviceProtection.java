@@ -16,15 +16,14 @@
 
 package org.ic4j.internetidentity;
 
-import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
-import org.ic4j.candid.types.Type;
 
-public final class Challenge {
-    @Name("png_base64")
-    @Field(Type.TEXT)
-    public String pngBase64;
-    @Name("challenge_key")
-    @Field(Type.TEXT)
-    public String challengeKey;       
+//This describes whether a device is "protected" or not.
+//When protected, a device can only be updated or removed if the
+//user is authenticated with that very device.
+public enum DeviceProtection {
+	@Name("protected")
+	isprotected,
+	@Name("unprotected")
+	isunprotected;
 }

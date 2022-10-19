@@ -23,7 +23,6 @@ import org.ic4j.agent.annotations.Waiter;
 import org.ic4j.agent.annotations.UPDATE;
 import org.ic4j.agent.annotations.Argument;
 import org.ic4j.agent.annotations.QUERY;
-import org.ic4j.agent.annotations.ResponseClass;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.parser.IDLArgs;
 import org.ic4j.candid.types.Type;
@@ -40,19 +39,22 @@ public interface InternetIdentityProxy {
 	@UPDATE
 	@Name("create_challenge")
 	@Waiter(timeout = 30)
-	@ResponseClass(Challenge.class)
 	public CompletableFuture<Challenge> createChallenge();
 	
 	@UPDATE
 	@Name("register")
 	@Waiter(timeout = 30)
-	@ResponseClass(RegisterResponse.class)
 	public CompletableFuture<RegisterResponse> register(@Argument(Type.RECORD)DeviceData deviceData, @Argument(Type.RECORD)ChallengeResult challengeResult);	
 
 	@UPDATE
 	@Name("add")
 	@Waiter(timeout = 30)
 	public void add(@Argument(Type.NAT64)Long userNumber, @Argument(Type.RECORD)DeviceData deviceData);
+	
+	@UPDATE
+	@Name("update")
+	@Waiter(timeout = 30)
+	public void update(@Argument(Type.NAT64)Long userNumber, @Argument(Type.NAT8)byte[] deviceKey, @Argument(Type.RECORD)DeviceData deviceData);	
 
 	@UPDATE
 	@Name("remove")
@@ -68,7 +70,6 @@ public interface InternetIdentityProxy {
 	@UPDATE
 	@Name("get_anchor_info")
 	@Waiter(timeout = 30)
-	@ResponseClass(IdentityAnchorInfo.class)
 	public CompletableFuture<IdentityAnchorInfo> getAnchorInfo(@Argument(Type.NAT64)Long userNumber);	
 
 	@QUERY
@@ -92,20 +93,17 @@ public interface InternetIdentityProxy {
 	@UPDATE
 	@Name("add_tentative_device")
 	@Waiter(timeout = 30)
-	@ResponseClass(AddTentativeDeviceResponse.class)
 	public CompletableFuture<AddTentativeDeviceResponse> addTentativeDevice(@Argument(Type.NAT64)Long userNumber,  @Argument(Type.RECORD)DeviceData deviceData);
 	
 	@UPDATE
 	@Name("verify_tentative_device")
 	@Waiter(timeout = 30)
-	@ResponseClass(VerifyTentativeDeviceResponse.class)
 	public CompletableFuture<VerifyTentativeDeviceResponse> verifyTentativeDevice(@Argument(Type.NAT64)Long userNumber, @Argument(Type.TEXT)String verificationCode);	
 
 
 	@UPDATE
 	@Name("prepare_delegation")
-	@Waiter(timeout = 30)
-	@ResponseClass(IDLArgs.class)	
+	@Waiter(timeout = 30)	
 	public CompletableFuture<IDLArgs> prepareDelegation(@Argument(Type.NAT64)Long userNumber,  @Argument(Type.TEXT)String frontendHostname,
 			 @Argument(Type.NAT8)byte[] sessionKey, @Argument(Type.OPT)Optional<Long> maxTimeToLive);
 	

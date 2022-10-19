@@ -18,10 +18,14 @@ import org.ic4j.agent.ReplicaTransport;
 import org.ic4j.agent.http.ReplicaApacheHttpTransport;
 import org.ic4j.agent.identity.BasicIdentity;
 import org.ic4j.agent.identity.Identity;
+import org.ic4j.candid.parser.IDLValue;
+import org.ic4j.candid.pojo.PojoDeserializer;
+import org.ic4j.candid.pojo.PojoSerializer;
 import org.ic4j.internetidentity.AddTentativeDeviceResponse;
 import org.ic4j.internetidentity.Challenge;
 import org.ic4j.internetidentity.ChallengeResult;
 import org.ic4j.internetidentity.DeviceData;
+import org.ic4j.internetidentity.DeviceProtection;
 import org.ic4j.internetidentity.GetDelegationResponse;
 import org.ic4j.internetidentity.IdentityAnchorInfo;
 import org.ic4j.internetidentity.InternetIdentityService;
@@ -59,8 +63,20 @@ public final class InternetIdenityTest {
 			env.load(propInputStream);
 
 			String iiLocation = env.getProperty("ii.location");
-			
+
 			LOG.info(iiLocation);
+
+			DeviceData device = new DeviceData();
+
+			device.protection = DeviceProtection.isprotected;
+
+			PojoSerializer pojoSerializer = new PojoSerializer();
+
+			IDLValue idlValue = pojoSerializer.serialize(device);
+
+			PojoDeserializer pojoDeserializer = new PojoDeserializer();
+
+			device = pojoDeserializer.deserialize(idlValue, DeviceData.class);
 
 			ReplicaTransport transport = ReplicaApacheHttpTransport.create(iiLocation);
 
@@ -71,28 +87,29 @@ public final class InternetIdenityTest {
 
 			Agent agent = new AgentBuilder().transport(transport).identity(identity).build();
 
+			agent.fetchRootKey();
+
 			InternetIdentityService internetIdentityService = InternetIdentityService.create(agent, env);
 
 			byte[] sessionKey = keyPair.getPublic().getEncoded();
-			
-			
+
 			CompletableFuture<Challenge> challengeResponse = internetIdentityService.createChallenge();
 
 			Challenge challenge = challengeResponse.get();
 
-			//LOG.info(challenge.pngBase64);
+			// LOG.info(challenge.pngBase64);
 			LOG.info(challenge.challengeKey);
 
 			Path captchaFile = Paths.get("challenge.png");
 			// convert byte[] back to a BufferedImage
 			BufferedImage captchaImage = internetIdentityService.getCaptchaImage(challenge);
-			
+
 			ChallengeResult challengeResult = new ChallengeResult();
 
 			challengeResult.challengeKey = challenge.challengeKey;
 			challengeResult.chars = "a";
 
-			DeviceData device = new DeviceData();
+			device = new DeviceData();
 
 			device.alias = "Device 1";
 			device.pubkey = sessionKey;
@@ -103,43 +120,37 @@ public final class InternetIdenityTest {
 
 			KeyType keyType = KeyType.platform;
 			device.keyType = keyType;
-			
-			
+
+			device.protection = DeviceProtection.isunprotected;
+
 			device.credentialId = Optional.empty();
-			
-			//device = null;
-			
-			//challengeResult = null;
-			
+
+			// device = null;
+
+			// challengeResult = null;
+
 			CompletableFuture<RegisterResponse> registerResponse = internetIdentityService.register(device,
 					challengeResult);
-			
-			
 
 			RegisterResponse register = registerResponse.get();
 			LOG.info(register.name());
-			LOG.info(register.registeredValue.userNumber.toString());					
+			LOG.info(register.registeredValue.userNumber.toString());
 
-			
 			Long userNumber = register.registeredValue.userNumber;
 
 			String frontendHostname = "http://0.0.0.0:8000/?canisterId=rdmx6-jaaaa-aaaaa-aaadq-cai&id=renrk-eyaaa-aaaaa-aaada-cai";
 
-			
 			CompletableFuture<PrepareDelegationResponse> response = internetIdentityService
 					.prepareDelegation(userNumber, frontendHostname, sessionKey, Optional.empty());
 
 			PrepareDelegationResponse prepareDelegationResponse = response.get();
 
-			
 			LOG.info(Base64.getEncoder().encodeToString(prepareDelegationResponse.userKey));
-			
+
 			GetDelegationResponse getDelegationResponse = internetIdentityService.getDelegation(userNumber,
 					frontendHostname, sessionKey, prepareDelegationResponse.timestamp);
 
 			LOG.info(Base64.getEncoder().encodeToString(getDelegationResponse.signedDelegation.signature));
-			
-			
 
 			Principal principal = internetIdentityService.getPrincipal(userNumber, frontendHostname);
 
@@ -191,9 +202,7 @@ public final class InternetIdenityTest {
 
 			InternetIdentityStats stats = internetIdentityService.stats();
 			LOG.info(stats.usersRegistered.toString());
-			
-			
-			
+
 		} catch (Exception e) {
 			LOG.error(e.getLocalizedMessage(), e);
 			Assertions.fail(e.getMessage());

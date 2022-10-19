@@ -37,5 +37,8 @@ public final class DeviceData {
     public Purpose purpose; 
     @Name("key_type")
     @Field(Type.VARIANT)
-    public KeyType keyType;     
+    public KeyType keyType;    
+    @Name("protection")
+    @Field(Type.VARIANT)
+    public DeviceProtection protection;         
 }
