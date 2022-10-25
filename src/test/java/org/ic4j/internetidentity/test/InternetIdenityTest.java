@@ -125,9 +125,6 @@ public final class InternetIdenityTest {
 
 			device.credentialId = Optional.empty();
 
-			// device = null;
-
-			// challengeResult = null;
 
 			CompletableFuture<RegisterResponse> registerResponse = internetIdentityService.register(device,
 					challengeResult);
