@@ -1,11 +1,10 @@
 ## Internet Identity Java Service 
 
-This library is a Java implementation of Dfinity Internet Identity Service. Internet Identity is an authentication service for the Internet Computer.
-<a href="https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification">https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification</a>. The library communicates directly with Internet Identity canister. Developers can use this library in any Java application to register new users, add or remove devices and authenticate client applications.
-
-To test Internet Identity Service locally, install local Internet Identity dApp. Then just configure custom Java properties with ii.location and ii.canister values pointing to the local instance.
+This Java library provides an implementation of Dfinity's Internet Identity Service, an authentication service for the Internet Computer. It allows developers to register new users, add or remove devices, and authenticate client applications.  More information can be found in the Internet Identity specification on the GitHub repository at <a href="https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification">https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification</a>.
+To test the Internet Identity Service locally, install the local Internet Identity dApp and configure custom Java properties with the ii.location and ii.canister values pointing to the local instance. 
 
 <a href="https://github.com/dfinity/internet-identity/tree/main/demos/using-dev-build">https://github.com/dfinity/internet-identity/tree/main/demos/using-dev-build</a>
+
 
 To use Internet Identity Service create InternetIdentityService object. Define your own properties if you want to use local instance of the service. 
 
@@ -109,20 +108,20 @@ InternetIdentityStats stats = internetIdentityService.stats();
 
 To add Java IC4J Internet Identity Service library to your Java project use Maven or Gradle import from Maven Central.
 
-<a href="https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.6.18/jar">
-https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.6.18/jar
+<a href="https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.6.19.1/jar">
+https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.6.19.1/jar
 </a>
 
 ```
 <dependency>
   <groupId>org.ic4j</groupId>
   <artifactId>ic4j-internetidentity</artifactId>
-  <version>0.6.18</version>
+  <version>0.6.19.1</version>
 </dependency>
 ```
 
 ```
-implementation 'org.ic4j:ic4j-internetidentity:0.6.18'
+implementation 'org.ic4j:ic4j-internetidentity:0.6.19.1'
 ```
 
 
