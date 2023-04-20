@@ -1,6 +1,6 @@
 ## Internet Identity Java Service 
 
-Providing an implementation of Dfinity's Internet Identity Service, this Java library enables developers to register new users, add or remove devices, and authenticate client applications on the Internet Computer.  More information can be found in the Internet Identity specification on the GitHub repository at <a href="https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification">https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification</a>.
+Providing an implementation of ICP Internet Identity Service, this Java library enables developers to register new users, add or remove devices, and authenticate client applications on the Internet Computer.  More information can be found in the Internet Identity specification on the GitHub repository at <a href="https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification">https://github.com/dfinity/internet-identity/blob/main/docs/internet-identity-spec.adoc#the-internet-identity-specification</a>.
 To test the Internet Identity Service locally, install the local Internet Identity dApp and configure custom Java properties with the ii.location and ii.canister values pointing to the local instance. 
 
 <a href="https://github.com/dfinity/internet-identity/tree/main/demos/using-dev-build">https://github.com/dfinity/internet-identity/tree/main/demos/using-dev-build</a>
