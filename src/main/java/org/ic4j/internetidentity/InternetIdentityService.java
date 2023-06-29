@@ -319,6 +319,10 @@ public final class InternetIdentityService {
 	public void remove(Long userNumber, byte[] deviceKey) {
 		internetIdentityProxy.remove(userNumber, deviceKey);
 	}
+	
+	public void update(Long userNumber, byte[] deviceKey, DeviceData deviceData) {
+		internetIdentityProxy.update(userNumber, deviceKey,deviceData);
+	}	
 
 	/*
 	 * Fetches the principal for a given user and front end.
