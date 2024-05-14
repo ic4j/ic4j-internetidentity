@@ -67,6 +67,10 @@ public interface InternetIdentityProxy {
 	@Name("lookup")
 	public DeviceData[] lookup(@Argument(Type.NAT64)Long userNumber);
 	
+	@QUERY
+	@Name("get_anchor_credentials")
+	public AnchorCredentials getAnchorCredentials(@Argument(Type.NAT64)Long userNumber);	
+	
 	@UPDATE
 	@Name("get_anchor_info")
 	@Waiter(timeout = 30)
@@ -111,4 +115,21 @@ public interface InternetIdentityProxy {
 	@Name("get_delegation")
 	public GetDelegationResponse getDelegation(@Argument(Type.NAT64)Long userNumber,@Argument(Type.TEXT)String frontendHostname,  @Argument(Type.NAT8)byte[] sessionKey, @Argument(Type.NAT64)Long timestamp);
 	
+	@UPDATE
+	@Name("deploy_archive")
+	@Waiter(timeout = 30)	
+	public CompletableFuture<DeployArchiveResult> deployArchive(@Argument(Type.NAT8)byte[] wasm);	
+
+    /// Returns a batch of entries _sorted by sequence number_ to be archived.
+    /// This is an update call because the archive information _must_ be certified.
+    /// Only callable by this IIs archive canister.
+	@UPDATE
+	@Name("fetch_entries")
+	@Waiter(timeout = 30)	
+	public CompletableFuture<BufferedArchiveEntry[]> fetchEntries();
+	
+	@UPDATE
+	@Name("acknowledge_entries")
+	@Waiter(timeout = 30)
+	public void acknowledgeEntries(@Argument(Type.NAT64)Long sequenceNumber);		
 }

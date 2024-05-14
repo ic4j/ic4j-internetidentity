@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Exilor Inc.
+ * Copyright 2024 Exilor Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,17 @@
 package org.ic4j.internetidentity;
 
 import org.ic4j.candid.annotations.Field;
-import org.ic4j.candid.annotations.Name;
+import org.ic4j.candid.annotations.Id;
 import org.ic4j.candid.types.Type;
 
-public final class SignedDelegation {
-    @Name("delegation")
-    @Field(Type.RECORD)
-    public Delegation delegation;	
-    @Name("signature")
-    @Field(Type.NAT8)
-    public byte[] signature;
-
+//Map with some variants for the value type.
+//Note, due to the Candid mapping this must be a tuple type thus we cannot name the fields `key` and `value`.
+public final class MetadataMap {
+	@Id(0)
+    @Field(Type.TEXT)
+    public String key;
+	
+	@Id(1)
+    @Field(Type.VARIANT)
+    public MetadataMapValue value;
 }

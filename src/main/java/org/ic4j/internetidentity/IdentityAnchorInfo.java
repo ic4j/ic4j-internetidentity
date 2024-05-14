@@ -20,10 +20,14 @@ import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.types.Type;
 
+//Information about the anchor
 public final class IdentityAnchorInfo {
+	 // All devices that can authenticate to this anchor
     @Name("devices")
     @Field(Type.RECORD)
-    public DeviceData[] devices;   
+
+    // Device registration status used when adding devices, see DeviceRegistrationInfo
+    public DeviceWithUsage[] devices;   
     @Name("device_registration")
     @Field(Type.RECORD)
     public DeviceRegistrationInfo deviceRegistration;    

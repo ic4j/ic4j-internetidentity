@@ -22,7 +22,9 @@ import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.types.Type;
 
-public final class DeviceData {
+//The same as `DeviceData` but with the `last_usage` field.
+//This field cannot be written, hence the separate type.
+public final class DeviceWithUsage {
     @Name("pubkey")
     @Field(Type.NAT8)
     public byte[] pubkey;	
@@ -43,7 +45,10 @@ public final class DeviceData {
     public DeviceProtection protection;   
     @Name("origin")
     @Field(Type.TEXT)
-    public Optional<String> origin;  
+    public Optional<String> origin;     
+    @Name("last_usage")
+    @Field(Type.NAT64)
+    public Optional<Long> lastUsage;      
     @Name("metadata")
     @Field(Type.RECORD)
     public Optional<MetadataMap> metadata;   

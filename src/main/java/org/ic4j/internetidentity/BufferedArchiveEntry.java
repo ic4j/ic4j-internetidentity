@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Exilor Inc.
+ * Copyright 2024 Exilor Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,25 @@
 
 package org.ic4j.internetidentity;
 
-import org.ic4j.agent.replicaapi.SignedDelegation;
+
 import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.types.Type;
 
-public enum GetDelegationResponse {
-	// The signed delegation was successfully retrieved.
-	signed_delegation,
-	// The signature is not ready. Maybe retry by calling `prepare_delegation`
-	no_such_delegation;
+public final class BufferedArchiveEntry {
+    @Name("anchor_number")
+    @Field(Type.NAT64)
+	public Long anchorNumber;	
+    
+    @Name("timestamp")
+    @Field(Type.NAT64)
+	public Long timestamp; 
+    
+    @Name("sequence_number")
+    @Field(Type.NAT64)
+	public Long sequenceNumber;  
 
-	@Name("signed_delegation")
-	@Field(Type.RECORD)
-	public SignedDelegation signedDelegation;
+    @Name("entry")
+    @Field(Type.NAT8)
+    public byte[] entry;
 }

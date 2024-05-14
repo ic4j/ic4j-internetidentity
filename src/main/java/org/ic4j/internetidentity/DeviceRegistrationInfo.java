@@ -22,12 +22,18 @@ import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.types.Type;
 
+//Extra information about registration status for new devices
 public final class DeviceRegistrationInfo {
+    // If present, the user has tentatively added a new device. This
+    // new device needs to be verified (see relevant endpoint) before
+    // 'expiration'.
     @Name("tentative_device")
     @Field(Type.RECORD)
     public Optional<DeviceData> tentativeDevice; 
     
-    @Name("timestamp")
+    // The timestamp at which the anchor will turn off registration mode
+    // (and the tentative device will be forgotten, if any, and if not verified)
+    @Name("expiration")
     @Field(Type.NAT64)
-    public Long timestamp;    
+    public Long expiration;    
 }

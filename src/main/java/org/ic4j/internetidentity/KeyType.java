@@ -20,5 +20,6 @@ public enum KeyType {
 	unknown,
 	platform,
 	cross_patform,
-	seed_phase;
+	seed_phase,
+	browser_storage_key;
 }

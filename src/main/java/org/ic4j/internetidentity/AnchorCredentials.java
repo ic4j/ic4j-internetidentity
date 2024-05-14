@@ -16,19 +16,22 @@
 
 package org.ic4j.internetidentity;
 
+import java.util.List;
+
 import org.ic4j.candid.annotations.Field;
 import org.ic4j.candid.annotations.Name;
 import org.ic4j.candid.types.Type;
-import org.ic4j.types.Principal;
 
-public final class Delegation {
-    @Name("pubkey")
+public final class AnchorCredentials {
+    @Name("credentials")
+    @Field(Type.RECORD)
+    public WebAuthnCredential[] credentials;	
+	
+    @Name("recovery_credentials")
+    @Field(Type.RECORD)
+    public WebAuthnCredential[] recoveryCredentials;
+ 
+    @Name("recovery_phrases")
     @Field(Type.NAT8)
-    public byte[] pubkey;
-    @Name("expiration")
-    @Field(Type.NAT64)
-    public Long timestamp; 
-    @Name("targets")
-    @Field(Type.PRINCIPAL)
-    public Principal[] targets;
+    public List<byte[]> recoveryPhrases;	
 }

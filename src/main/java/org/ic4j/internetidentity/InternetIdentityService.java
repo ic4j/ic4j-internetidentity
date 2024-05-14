@@ -117,6 +117,10 @@ public final class InternetIdentityService {
 	public DeviceData[] lookup(Long userNumber) {
 		return internetIdentityProxy.lookup(userNumber);
 	}
+	
+	public AnchorCredentials getAnchorCredentials(Long userNumber) {
+		return internetIdentityProxy.getAnchorCredentials(userNumber);
+	}	
 
 	public InternetIdentityStats stats() {
 		return internetIdentityProxy.stats();
@@ -347,4 +351,11 @@ public final class InternetIdentityService {
 		return internetIdentityProxy.getAnchorInfo(userNumber);
 	}
 
+	public CompletableFuture<DeployArchiveResult> deployArchive(byte[] wasm) {
+		return internetIdentityProxy.deployArchive(wasm);
+	}
+	
+	public void acknowledgeEntries(Long sequenceNumber) {
+		internetIdentityProxy.acknowledgeEntries(sequenceNumber);
+	}
 }
