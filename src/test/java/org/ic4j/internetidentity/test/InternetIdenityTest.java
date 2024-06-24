@@ -27,6 +27,8 @@ import org.ic4j.agent.http.ReplicaApacheHttpTransport;
 import org.ic4j.agent.identity.BasicIdentity;
 import org.ic4j.agent.identity.DelegatedIdentity;
 import org.ic4j.agent.identity.Identity;
+import org.ic4j.agent.identity.Prime256v1Identity;
+import org.ic4j.agent.identity.Secp256k1Identity;
 import org.ic4j.agent.replicaapi.SignedDelegation;
 import org.ic4j.candid.parser.IDLArgs;
 import org.ic4j.candid.parser.IDLValue;
@@ -95,17 +97,39 @@ public final class InternetIdenityTest {
 
 			ReplicaTransport transport = ReplicaApacheHttpTransport.create(iiLocation);
 
-			KeyPair keyPair = InternetIdentityService.generateSessionKey();
+			KeyPair keyPair = InternetIdentityService.generateSessionKey();	
+			
 			Identity identity = BasicIdentity.fromKeyPair(keyPair);
 
-			//Identity identity = BasicIdentity.fromPEMFile(Paths.get("identity.pem"));
+			InternetIdentityService.savePrivateKey(keyPair.getPrivate(), "identity.pem");
+		
+			
+			KeyPair keyPairSECP = InternetIdentityService.generateSessionKey("secp256k1"); 
+			
+			identity = Secp256k1Identity.fromKeyPair(keyPairSECP);
+			
+			InternetIdentityService.savePrivateKey(keyPairSECP.getPrivate(), "identitySECP.pem");	
+			
+			identity = Secp256k1Identity.fromPEMFile(Paths.get("Secp256k1_identity.pem"));
+			
+			identity = Secp256k1Identity.fromPEMFile(Paths.get("identitySECP.pem"));
+			
+			KeyPair keyPairPRIME = InternetIdentityService.generateSessionKey("prime256v1"); 
+			
+			identity = Secp256k1Identity.fromKeyPair(keyPairPRIME);
+			
+			InternetIdentityService.savePrivateKey(keyPairPRIME.getPrivate(), "identityPRIME.pem");		
+			
+			identity = Prime256v1Identity.fromPEMFile(Paths.get("identityPRIME.pem"));
+			
+			identity = BasicIdentity.fromPEMFile(Paths.get("identity.pem"));
 
 			Agent agent = new AgentBuilder().transport(transport).identity(identity).build();
-
 
 			agent.fetchRootKey();			
 			
 			InternetIdentityService internetIdentityService = InternetIdentityService.create(agent, env);
+			
 			
 			InternetIdentityStats stats = internetIdentityService.stats();
 			LOG.info(stats.usersRegistered.toString());

@@ -23,11 +23,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.spec.ECGenParameterSpec;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
@@ -36,8 +42,9 @@ import java.util.concurrent.ExecutionException;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.ic4j.agent.Agent;
 import org.ic4j.agent.ProxyBuilder;
 import org.ic4j.candid.parser.IDLArgs;
@@ -90,19 +97,53 @@ public final class InternetIdentityService {
 		return env;
 	}
 
-	public static KeyPair generateSessionKey() throws NoSuchAlgorithmException {
-		return KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
+	public static KeyPair generateSessionKey(String algorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+		Objects.requireNonNull(algorithm, "Missing algorithm");
+		
+		KeyPairGenerator keyGen;
+		ECGenParameterSpec ecSpec;
+		switch (algorithm) {
+		case "secp256k1":
+			 keyGen = KeyPairGenerator.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
+			 ecSpec = new ECGenParameterSpec("secp256k1");
+			 keyGen.initialize(ecSpec, new SecureRandom());
+			 return keyGen.generateKeyPair();
+		case "prime256v1":	
+			 keyGen = KeyPairGenerator.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
+			 ecSpec = new ECGenParameterSpec("prime256v1");
+			 keyGen.initialize(ecSpec, new SecureRandom());
+			 return keyGen.generateKeyPair();
+		case "Ed25519":
+			return KeyPairGenerator.getInstance(algorithm,BouncyCastleProvider.PROVIDER_NAME).generateKeyPair();
+			default:
+				throw new NoSuchAlgorithmException("Unsupported algorithm");
+		}
+
 	}
+	
+	public static KeyPair generateSessionKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+		return generateSessionKey("Ed25519");
+	}	
 
 	public static void savePrivateKey(PrivateKey privateKey, String pemFileName) throws IOException {
 		PemObject pemObject = new PemObject("PRIVATE KEY", privateKey.getEncoded());
 
 		Path pemFile = Paths.get(pemFileName);
 
-		PemWriter pemWriter = new PemWriter(new FileWriter(pemFile.toFile()));
+		JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter(pemFile.toFile()));
 		pemWriter.writeObject(pemObject);
 		pemWriter.close();
 	}
+	
+	public static void savePublicKey(PublicKey publicKey, String pemFileName) throws IOException {
+		PemObject pemObject = new PemObject("PUBLIC KEY", publicKey.getEncoded());
+
+		Path pemFile = Paths.get(pemFileName);
+
+		JcaPEMWriter pemWriter = new JcaPEMWriter(new FileWriter(pemFile.toFile()));
+		pemWriter.writeObject(pemObject);
+		pemWriter.close();
+	}	
 
 	public static BufferedImage getCaptchaImage(Challenge challenge) throws IOException {
 		InputStream is = new ByteArrayInputStream(Base64.getDecoder().decode(challenge.pngBase64.getBytes()));

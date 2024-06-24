@@ -1,9 +1,10 @@
 plugins {
     id 'java' 
+    id 'eclipse'
 }
 
 group 'org.ic4j'
-version '0.7.0'
+version '0.7.1'
 
 sourceCompatibility = 1.8
 
@@ -37,12 +38,12 @@ test {
 }
 
 dependencies {
-	implementation group: 'org.ic4j', name: 'ic4j-agent', version: '0.7.0'
-	implementation group: 'org.ic4j', name: 'ic4j-candid', version: '0.7.0'		
+	implementation group: 'org.ic4j', name: 'ic4j-agent', version: '0.7.1'
+	implementation group: 'org.ic4j', name: 'ic4j-candid', version: '0.7.1'		
 	
 	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13'	
 	
-		// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.14.0'
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
@@ -66,8 +67,14 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
 	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.78.1'
 	
+	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
+	
 	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine
-	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.2'	
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+	
+	// https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
+	testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.10.0'	
 }
 
 
