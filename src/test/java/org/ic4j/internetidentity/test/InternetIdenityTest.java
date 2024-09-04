@@ -35,6 +35,7 @@ import org.ic4j.candid.parser.IDLValue;
 import org.ic4j.candid.pojo.PojoDeserializer;
 import org.ic4j.candid.pojo.PojoSerializer;
 import org.ic4j.internetidentity.AddTentativeDeviceResponse;
+import org.ic4j.internetidentity.Algorithm;
 import org.ic4j.internetidentity.AnchorCredentials;
 import org.ic4j.internetidentity.Challenge;
 import org.ic4j.internetidentity.ChallengeResult;
@@ -104,7 +105,7 @@ public final class InternetIdenityTest {
 			InternetIdentityService.savePrivateKey(keyPair.getPrivate(), "identity.pem");
 		
 			
-			KeyPair keyPairSECP = InternetIdentityService.generateSessionKey("secp256k1"); 
+			KeyPair keyPairSECP = InternetIdentityService.generateSessionKey(Algorithm.SECP256K1); 
 			
 			identity = Secp256k1Identity.fromKeyPair(keyPairSECP);
 			
@@ -114,7 +115,7 @@ public final class InternetIdenityTest {
 			
 			identity = Secp256k1Identity.fromPEMFile(Paths.get("identitySECP.pem"));
 			
-			KeyPair keyPairPRIME = InternetIdentityService.generateSessionKey("prime256v1"); 
+			KeyPair keyPairPRIME = InternetIdentityService.generateSessionKey(Algorithm.PRIME256V1); 
 			
 			identity = Secp256k1Identity.fromKeyPair(keyPairPRIME);
 			

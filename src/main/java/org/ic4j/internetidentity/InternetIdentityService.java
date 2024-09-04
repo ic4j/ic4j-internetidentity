@@ -97,24 +97,24 @@ public final class InternetIdentityService {
 		return env;
 	}
 
-	public static KeyPair generateSessionKey(String algorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+	public static KeyPair generateSessionKey(Algorithm algorithm) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
 		Objects.requireNonNull(algorithm, "Missing algorithm");
 		
 		KeyPairGenerator keyGen;
 		ECGenParameterSpec ecSpec;
 		switch (algorithm) {
-		case "secp256k1":
+		case SECP256K1:
 			 keyGen = KeyPairGenerator.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
-			 ecSpec = new ECGenParameterSpec("secp256k1");
+			 ecSpec = new ECGenParameterSpec(algorithm.getName());
 			 keyGen.initialize(ecSpec, new SecureRandom());
 			 return keyGen.generateKeyPair();
-		case "prime256v1":	
+		case PRIME256V1:	
 			 keyGen = KeyPairGenerator.getInstance("ECDSA", BouncyCastleProvider.PROVIDER_NAME);
-			 ecSpec = new ECGenParameterSpec("prime256v1");
+			 ecSpec = new ECGenParameterSpec(algorithm.getName());
 			 keyGen.initialize(ecSpec, new SecureRandom());
 			 return keyGen.generateKeyPair();
-		case "Ed25519":
-			return KeyPairGenerator.getInstance(algorithm,BouncyCastleProvider.PROVIDER_NAME).generateKeyPair();
+		case ED25519:
+			return KeyPairGenerator.getInstance(algorithm.getName(),BouncyCastleProvider.PROVIDER_NAME).generateKeyPair();
 			default:
 				throw new NoSuchAlgorithmException("Unsupported algorithm");
 		}
@@ -122,7 +122,7 @@ public final class InternetIdentityService {
 	}
 	
 	public static KeyPair generateSessionKey() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
-		return generateSessionKey("Ed25519");
+		return generateSessionKey(Algorithm.ED25519);
 	}	
 
 	public static void savePrivateKey(PrivateKey privateKey, String pemFileName) throws IOException {
