@@ -1,0 +1,13 @@
+/bin/
+/build/
+/.gradle/
+/secring.gpg
+/build-export.gradle
+/.classpath
+/gradle.properties
+/.settings/
+/.DS_Store
+/.project
+/hs_err_pid276.log
+/src/test/.dfx/
+/identity*.pem
