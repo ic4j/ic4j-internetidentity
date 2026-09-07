@@ -108,8 +108,8 @@ InternetIdentityStats stats = internetIdentityService.stats();
 
 To add Java IC4J Internet Identity Service library to your Java project use Maven or Gradle import from Maven Central.
 
-<a href="https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.8.5/jar">
-https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.8.5/jar
+<a href="https://search.maven.org/artifact/org.ic4j/ic4j-internetidentity/0.8.5/jar">
+https://search.maven.org/artifact/org.ic4j/ic4j-internetidentity/0.8.5/jar
 </a>
 
 ```
