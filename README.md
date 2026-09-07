@@ -108,23 +108,25 @@ InternetIdentityStats stats = internetIdentityService.stats();
 
 To add Java IC4J Internet Identity Service library to your Java project use Maven or Gradle import from Maven Central.
 
-<a href="https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.8.0/jar">
-https://search.maven.org/artifact/ic4j/ic4j-internetidentity/0.8.0/jar
+<a href="https://search.maven.org/artifact/org.ic4j/ic4j-internetidentity/0.8.5/jar">
+https://search.maven.org/artifact/org.ic4j/ic4j-internetidentity/0.8.5/jar
 </a>
 
 ```
 <dependency>
   <groupId>org.ic4j</groupId>
   <artifactId>ic4j-internetidentity</artifactId>
-	<version>0.8.0</version>
+	<version>0.8.5</version>
 </dependency>
 ```
 
 ```
-implementation 'org.ic4j:ic4j-internetidentity:0.8.0'
+implementation 'org.ic4j:ic4j-internetidentity:0.8.5'
 ```
 
 
 # Build
 
 You need JDK 8+ to build IC4J Internet Identity Service.
+
+Install `org.ic4j:ic4j-agent:0.8.5` and `org.ic4j:ic4j-candid:0.8.5` in your local Maven repository before building. Gradle prefers local Maven for these two versions only; other dependencies resolve from Maven Central.
