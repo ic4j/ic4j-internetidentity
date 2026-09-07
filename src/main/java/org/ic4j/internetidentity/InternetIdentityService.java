@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import javax.imageio.ImageIO;
 
@@ -47,7 +46,6 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.ic4j.agent.Agent;
 import org.ic4j.agent.ProxyBuilder;
-import org.ic4j.candid.parser.IDLArgs;
 import org.ic4j.types.Principal;
 
 public final class InternetIdentityService {
@@ -225,23 +223,16 @@ public final class InternetIdentityService {
 	
 	public CompletableFuture<PrepareDelegationResponse> prepareDelegation(Long userNumber, String frontendHostname,
 			byte[] sessionKey, Optional<Long> maxTimeToLive) {
-		CompletableFuture<PrepareDelegationResponse> response = new CompletableFuture<PrepareDelegationResponse>();
+		return internetIdentityProxy.prepareDelegation(userNumber, frontendHostname, sessionKey, maxTimeToLive)
+				.handle((outArgs, error) -> {
+					if (error != null)
+						throw new InternetIdentityError(error);
 
-		try {
-
-			IDLArgs outArgs = internetIdentityProxy.prepareDelegation(userNumber, frontendHostname, sessionKey, maxTimeToLive).get();
-			PrepareDelegationResponse prepareDelegationResponse = new PrepareDelegationResponse();
-
-			prepareDelegationResponse.userKey = ArrayUtils.toPrimitive((Byte[]) outArgs.getArgs().get(0).getValue());
-			prepareDelegationResponse.timestamp = outArgs.getArgs().get(1).getValue();
-
-			response.complete(prepareDelegationResponse);
-
-		} catch (InterruptedException | ExecutionException e) {
-			response.completeExceptionally(new InternetIdentityError(e));
-		}
-
-		return response;
+					PrepareDelegationResponse response = new PrepareDelegationResponse();
+					response.userKey = ArrayUtils.toPrimitive((Byte[]) outArgs.getArgs().get(0).getValue());
+					response.timestamp = outArgs.getArgs().get(1).getValue();
+					return response;
+				});
 	}
 
 	/*
