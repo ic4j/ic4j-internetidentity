@@ -39,7 +39,7 @@ g agent clean publishToMavenLocal
     sha256sum org/ic4j/ic4j-{agent,candid}/0.8.5/ic4j-*-0.8.5.jar
 ) | tee "$reports/dependencies.sha256"
 source "$GITHUB_WORKSPACE/module/ci/local-replica.sh"
-g module clean jar test --tests "*CiTest" --tests "*InternetIdentityServiceTest"
+g module clean jar test
 
 (cd "$repo"; sha256sum -c "$reports/dependencies.sha256")
 jar="module/build/libs/ic4j-internetidentity-0.8.5.jar"
@@ -57,13 +57,13 @@ with zipfile.ZipFile(sys.argv[1]) as jar:
     for name in classes:
         assert struct.unpack(">H", jar.read(name)[6:8])[0] == 52, f"{name} is not Java 8 bytecode"
 suites = list(pathlib.Path("module/build/test-results/test").glob("TEST-*.xml"))
-cases = [(test.get("classname"), test.get("name"), len(test))
+cases = [(test.get("classname"), test.get("name").removesuffix("()"))
          for suite in suites for test in ET.parse(suite).iter("testcase")
          if not any(test.find(tag) is not None for tag in ("skipped", "error", "failure"))]
-assert any(name == "deployedInternetIdentityRespondsToStatsAndChallenge" for _, name, _ in cases), "Local replica smoke did not run"
+assert any(name == "deployedInternetIdentityRespondsToStatsAndChallenge" for _, name in cases), "Local replica smoke did not run"
 assert len(cases) >= 5, "Expected test set incomplete"
 
 print(f"{len(classes)} module classes with Java 8 bytecode")
-for klass, test, _ in sorted(cases):
+for klass, test in sorted(cases):
     print(f"PASS {klass}.{test}")
 PY
