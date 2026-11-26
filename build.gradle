@@ -8,6 +8,13 @@ group 'org.ic4j'
 version '0.8.5'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(JavaCompile).configureEach {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release = 8
+    }
+}
 
 repositories {
     mavenLocal {

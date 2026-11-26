@@ -1,0 +1,57 @@
+name: IC4J internetidentity build and test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Java 21 build and test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      CANDID_REV: 35933a00ebfaeff6852010deed1633773c19b3a9
+      AGENT_REV: 67dd09c1eb18583834b7772dbca5515297cea853
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          path: module
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: ic4j/ic4j-candid
+          ref: ${{ env.CANDID_REV }}
+          path: candid
+          persist-credentials: false
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: ic4j/ic4j-agent
+          ref: ${{ env.AGENT_REV }}
+          path: agent
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5
+        with:
+          gradle-version: '8.14'
+          cache-disabled: true
+      - name: Build and test with run-local dependencies
+        run: bash module/ci/build-test.sh
+      - name: Preserve JUnit reports and provenance
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: ic4j-internetidentity-java21-reports
+          retention-days: 10
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/ic4j-build-test/reports/
+            module/build/test-results/test/TEST-*.xml
